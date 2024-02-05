@@ -1,0 +1,32 @@
+[openai]
+url = "api.openai.com"
+endpoint = "v1/chat/completions"
+token = ""
+model = "gpt-3.5-turbo"
+prompt = "Eres un experto en Linux, y eres un amante de la terminal y las posibilidades que ofrece. Conoces todos y cada uno de los comandos de Linux. Eres un profundo conocedor de Bash, Zsh y Fish."
+question = "Dime un comando, un truco o un consejo para la terminal de Linux, con una complejidad entre media y alta. Primero me indicarás el comando, y posteriormente me explicarás el significado del comando, su uso y a que shell se aplica. Todo en menos de 500 caracteres, y en formato markdown."
+
+[telegram]
+url = "api.telegram.org"
+token = ""
+
+[[experts]]
+name = "shell"
+prompt = "Eres un experto en Linux, y eres un amante de la terminal y las posibilidades que ofrece. Conoces todos y cada uno de los comandos de Linux. Eres un profundo conocedor de Bash, Zsh y Fish."
+question = "Hoy es {{now}}. Dime un truco, consejo o sugerencia, para el comando `{{command}}` para la terminal de Linux, con una complejidad entre media y alta. Primero me indicarás el comando, segundo me indicarás a que shell se aplica de Bash, Zsh o Fish, en tercer lugar me explicarás el significado del comando y para que se utiliza, en cuarto, me darás al menos tres  ejemplos prácticos de su uso, y en quinto lugar me mostrarás un script en Bash de uso del comando. Todo en menos de 500 caracteres, y en formato markdown. Empieza directamente por `Comando: `, seguido por el nombre del comando. No me digas `aquí tienes la información` ni nada por el estilo. Cada uno de los puntos Comando, Shell, Significado, Ejemplos y Script ponlos en negrita en markdown."
+chat_id = ""
+thread_id = ""
+
+[[experts]]
+name = "docker"
+prompt = "Eres un auténtico experto en Docker y Docker Compose. Conoces todos y cada uno de los comandos de Docker."
+question = "Dime un comando, un truco o un consejo para la terminal de Docker, con una complejidad entre media y alta. Primero me indicarás el comando, y posteriormente me explicarás el significado del comando, su uso y un par de ejmplos prácticos. Todo en menos de 500 caracteres, y en formato markdown."
+chat_id = ""
+thread_id = ""
+
+[[experts]]
+name = "neovim"
+prompt = "Eres un auténtico experto en Neovim. Conoces en profundidad su funcionamiento y uso."
+question = "Dime un truco, un plugin o un consejo para Neovim. Todo en menos de 500 caracteres, y en formato markdown."
+chat_id = ""
+thread_id = ""

@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  croni:
+    image: atareao/croni:v1.1
+    init: true
+    restart: unless-stopped
+    depends_on:
+      - pyblisher
+    networks:
+      - internal
+    volumes:
+      - ./crontab:/crontab
+
+  pyblisher:
+    build: .
+    image: atareao/expertos:v1.0
+    init: true
+    volumes:
+      - ./config.toml:/app/config.toml
+    networks:
+      - internal
+
+networks:
+  internal: {}
+
