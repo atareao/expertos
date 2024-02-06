@@ -38,7 +38,8 @@ async def attach_db(app, loop):
         data["openai"]["token"],
         data["openai"]["model"],
     )
-    app.ctx.telegram = Telegram(data["telegram"]["url"], data["telegram"]["token"])
+    app.ctx.telegram = Telegram(
+        data["telegram"]["url"], data["telegram"]["token"])
 
 
 def get_variables(expert_name: str):
@@ -397,20 +398,26 @@ async def query_handler(request: Request, expert_name: str | None = None):
 
 @app.get("/post/<expert_name>", name="post_expert_name")
 async def post_handler(request: Request, expert_name: str):
-    experts_name = list(app.ctx.experts.keys())
-    if expert_name:
-        if expert_name in experts_name:
-            expert = app.ctx.experts[expert_name]
-            variables = get_variables(expert_name)
-            advice = await app.ctx.chat_gpt.post(expert, variables)
-            response = await app.ctx.telegram.post(expert, advice)
-            logger.debug(response)
-            return json(response)
+    try:
+        experts_name = list(app.ctx.experts.keys())
+        if expert_name:
+            if expert_name in experts_name:
+                expert = app.ctx.experts[expert_name]
+                variables = get_variables(expert_name)
+                advice = await app.ctx.chat_gpt.post(expert, variables)
+                response = await app.ctx.telegram.post(expert, advice)
+                logger.debug(response)
+                return json(response)
+            else:
+                return json(
+                    {"status": "Ko", "message": f"{expert_name} not found"}, 404
+                )
         else:
-            return json({"status": "Ko", "message": f"{expert_name} not found"})
-    else:
-        logger.debug(experts_name)
-        return json({"status": "Ko", "message": "expert_name is mandatory"})
+            logger.debug(experts_name)
+            return json({"status": "Ko", "message": "expert_name is mandatory"}, 400)
+    except Exception as exception:
+        logger.error(f"Error: {exception}")
+        return json({"status": "Ko", "message": f"Error: {exception}"}, 500)
 
 
 if __name__ == "__main__":

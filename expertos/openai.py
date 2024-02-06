@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from httpx import AsyncClient
+from httpx import AsyncClient, Timeout
 from expert import Expert
 from datetime import datetime
 
@@ -26,7 +26,8 @@ class ChatGPT:
             "model": self._model,
             "messages": expert.messages(variables)
         }
-        async with AsyncClient() as client:
+        timeout = Timeout(connect=5.0, read=120.0)
+        async with AsyncClient(timeout=timeout) as client:
             response = await client.post(
                 self._url, headers=self._headers, json=payload
             )
