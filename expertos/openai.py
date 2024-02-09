@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 
 
 class ChatGPT:
+    """A class to manage ChatGPT"""
+
     def __init__(self, url: str, endpoint, token: str, model: str):
         logger.info("__init__")
         self._url = f"https://{url}/{endpoint}"
