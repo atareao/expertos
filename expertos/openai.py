@@ -4,7 +4,6 @@
 import logging
 from httpx import AsyncClient
 from expert import Expert
-from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -20,11 +19,11 @@ class ChatGPT:
         }
         self._model = model
 
-    async def post(self, expert: Expert, variables: dict) -> str:
+    async def post(self, expert: Expert) -> str:
         logger.info("post")
         payload = {
             "model": self._model,
-            "messages": expert.messages(variables)
+            "messages": expert.messages()
         }
         async with AsyncClient(timeout=None) as client:
             response = await client.post(
@@ -59,11 +58,8 @@ async def main():
     model = data["openai"]["model"]
 
     chat_gpt = ChatGPT(url, endpoint, token, model)
-    variables = {
-            "now": datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-            }
     for name, expert in experts.items():
-        response = await chat_gpt.post(expert, variables)
+        response = await chat_gpt.post(expert)
         print(f"{name}: {response}")
 
 
