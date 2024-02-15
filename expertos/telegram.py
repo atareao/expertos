@@ -4,7 +4,6 @@
 import logging
 from httpx import AsyncClient
 from expert import Expert
-from retrying_async import retry
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +17,6 @@ class Telegram:
             "Content-Type": "application/json",
         }
 
-    @retry(attempts=3, delay=5)
     async def post(self, expert: Expert, message: str):
         logger.info("post")
         url = f"{self._url}/sendMessage"

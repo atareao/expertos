@@ -21,7 +21,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-python -m sanic main:app \
-      --host=0.0.0.0 \
-      --port=8000 \
-      --workers=4
+WORKERS=4
+WORKER_CLASS=uvicorn.workers.UvicornWorker
+LOG_LEVEL=debug
+BIND=0.0.0.0:8000
+#    --worker-class $WORKER_CLASS \
+
+
+gunicorn main:app \
+    --workers $WORKERS \
+    --worker-class $WORKER_CLASS \
+    --log-level=$LOG_LEVEL \
+    --bind=$BIND
