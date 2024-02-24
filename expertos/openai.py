@@ -3,7 +3,7 @@
 
 import logging
 from httpx import AsyncClient
-from expert import Expert
+from expertos.expert import Expert
 
 logger = logging.getLogger(__name__)
 

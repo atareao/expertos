@@ -5,6 +5,7 @@
 import logging
 import sys
 import tomllib
+from typing import Union
 from fastapi import FastAPI, Response, status
 from expert import Expert
 from openai import ChatGPT
@@ -58,14 +59,17 @@ async def query_handler(response: Response, expert_name: str | None = None):
 
 
 @app.get("/post/{expert_name}")
-async def post_handler(expert_name: str, response: Response):
+async def post_handler(expert_name: str, chat_id: Union[int, str],
+                       thread_id: Union[int, None], response: Response):
     try:
+        logger.debug(f"chat_id: {chat_id}, thread_id: {thread_id}")
         experts_name = list(experts.keys())
         if expert_name:
             if expert_name in experts_name:
+                thread_id = thread_id if thread_id else 0
                 expert = experts[expert_name]
-                advice = await chat_gpt.post(expert)
-                response = await telegram.post(expert, advice)
+                message = await chat_gpt.post(expert)
+                response = await telegram.post(chat_id, thread_id, message)
                 logger.debug(response)
                 return response
             else:

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from typing import Union
 from httpx import AsyncClient
-from expert import Expert
 
 logger = logging.getLogger(__name__)
 
@@ -17,12 +17,13 @@ class Telegram:
             "Content-Type": "application/json",
         }
 
-    async def post(self, expert: Expert, message: str):
+    async def post(self, chat_id: Union[str, int], thread_id: int = 0,
+                   message: str = ""):
         logger.info("post")
         url = f"{self._url}/sendMessage"
         payload = {
-                "chat_id": int(expert.get_chat_id()),
-                "message_thread_id": int(expert.get_thread_id()),
+                "chat_id": chat_id,
+                "message_thread_id": thread_id,
                 "parse_mode": "markdown",
                 "text": message
                 }
