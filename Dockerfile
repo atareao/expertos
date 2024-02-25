@@ -46,7 +46,8 @@ RUN echo "**** install Python ****" && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
-COPY run.sh ./expertos /app/
+COPY run.sh /app/
+COPY ./expertos /app/expertos
 
 RUN adduser \
     --disabled-password \

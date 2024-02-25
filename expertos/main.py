@@ -2,18 +2,30 @@
 # -*- coding: utf-8 -*-
 
 
+import importlib
 import logging
+import os
 import sys
 import tomllib
-from typing import Union
+from typing import Dict, Union
 from fastapi import FastAPI, Response, status
-from expert import Expert
 from openai import ChatGPT
 from telegram import Telegram
 
 FORMAT = "[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
 logging.basicConfig(stream=sys.stdout, format=FORMAT, level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, parentdir)
+
+
+def instanciate(module_name: str,
+                class_name: str,
+                data: Dict[str, str]) -> object:
+    module = importlib.import_module(f"expertos.{module_name}")
+    Klass = getattr(module, class_name)
+    return Klass(data)
 
 
 experts = {}
@@ -22,7 +34,9 @@ with open("config.toml", mode="r") as fr:
     data = tomllib.loads(content)
     logger.debug(data)
     for data_expert in data["experts"]:
-        experts[data_expert["name"]] = Expert(data_expert)
+        experts[data_expert["name"]] = instanciate(data_expert["module"],
+                                                   data_expert["class"],
+                                                   data_expert)
 chat_gpt = ChatGPT(
     data["openai"]["url"],
     data["openai"]["endpoint"],

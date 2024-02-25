@@ -4,12 +4,14 @@
 from datetime import date
 from datetime import datetime
 from typing import Dict
+#from expertos.db import DB
 from expertos.expert import Expert
 
 
 class LinuxExpert(Expert):
     def __init__(self, data: Dict[str, str]):
         super().__init__(data)
+        self._filename = data["filename"]
 
     def get_variables(self):
         variables = super().get_variables()

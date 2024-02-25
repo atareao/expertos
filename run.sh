@@ -29,6 +29,7 @@ BIND=0.0.0.0:8000
 
 
 gunicorn main:app \
+    --chdir /app/expertos \
     --workers $WORKERS \
     --worker-class $WORKER_CLASS \
     --log-level=$LOG_LEVEL \

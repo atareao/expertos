@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from typing import List
 from httpx import AsyncClient
-from expertos.expert import Expert
 
 logger = logging.getLogger(__name__)
 
@@ -21,11 +21,11 @@ class ChatGPT:
         }
         self._model = model
 
-    async def post(self, expert: Expert) -> str:
+    async def post(self, messages: List[str]) -> str:
         logger.info("post")
         payload = {
             "model": self._model,
-            "messages": expert.messages()
+            "messages": messages
         }
         async with AsyncClient(timeout=None) as client:
             response = await client.post(
@@ -45,6 +45,7 @@ async def main():
     import tomllib
     import aiofiles
     from pprint import pprint
+    from expertos.expert import Expert
     experts = {}
 
     async with aiofiles.open("config.toml", mode="r") as fr:
