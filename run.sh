@@ -22,15 +22,12 @@
 # SOFTWARE.
 
 WORKERS=4
-WORKER_CLASS=uvicorn.workers.UvicornWorker
 LOG_LEVEL=debug
-BIND=0.0.0.0:8000
+HOST=0.0.0.0
+PORT=8000
 #    --worker-class $WORKER_CLASS \
 
-
-gunicorn main:app \
-    --chdir /app/expertos \
-    --workers $WORKERS \
-    --worker-class $WORKER_CLASS \
-    --log-level=$LOG_LEVEL \
-    --bind=$BIND
+sanic expertos.main:app \
+    --host=$HOST \
+    --port=$PORT \
+    --workers=$WORKERS

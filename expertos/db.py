@@ -56,6 +56,15 @@ class DB:
                 return res.fetchall()
 
     @log.info
+    def update(self, sql: str, values):
+        with sqlite3.connect(self._filename) as connection:
+            cursor = connection.cursor()
+            res = cursor.execute(sql, values)
+            connection.commit()
+            if sql.find(" RETURNING ") > -1:
+                return res.fetchall()
+
+    @log.info
     def table_exists(self, table_name: str) -> bool:
         sql = ("SELECT name FROM sqlite_master WHERE type='table' AND "
                "name = ? ")

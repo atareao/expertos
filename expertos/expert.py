@@ -5,17 +5,19 @@ import logging
 from typing import List, Dict
 from jinja2 import Template
 from datetime import datetime
+from expertos.db import DB
 
 logger = logging.getLogger(__name__)
 
 
 class Expert:
-    def __init__(self, data: Dict[str, str]):
+    def __init__(self, db: DB, data: Dict[str, str]):
         self._name = data["name"]
         self._prompt = data["prompt"]
         self._question = data["question"]
+        self._db = db
 
-    def messages(self) -> List[Dict[str, str]]:
+    def get_messages(self) -> List[Dict[str, str]]:
         template_prompt = Template(self._prompt)
         variables = self.get_variables()
         prompt = template_prompt.render(variables)
