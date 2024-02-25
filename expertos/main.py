@@ -9,8 +9,9 @@ import sys
 import tomllib
 from typing import Dict, Union
 from sanic import Sanic
-from sanic import json
 from sanic.request import Request
+from sanic.response import json
+
 from expertos.db import DB
 from expertos.openai import ChatGPT
 from expertos.telegram import Telegram

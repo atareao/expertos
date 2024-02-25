@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import random
-from datetime import date
-from datetime import datetime
 from typing import Dict
 from expertos import log
 from expertos.db import DB
