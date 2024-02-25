@@ -23,6 +23,7 @@
 
 import os
 from expertos.db import DB
+from expertos import log
 
 FILENAME = "test.db"
 TABLENAME = "test"
@@ -42,10 +43,11 @@ class TestDB:
         if os.path.exists(FILENAME):
             os.remove(FILENAME)
 
+    @log.info
     def test_db_exists(self):
         sql = ("SELECT name FROM sqlite_master WHERE type='table' AND "
                "name = ? ")
-        values = self.db.select(sql, TABLENAME)
-        print(values)
+        values = self.db.select(sql, (TABLENAME,))
+        log.debug(values)
         assert values is not None
         assert values[0][0] == TABLENAME

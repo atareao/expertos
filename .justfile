@@ -44,3 +44,6 @@ stop:
 
 run:
     poetry run python expertos/main.py
+
+run-test:
+    poetry run pytest tests --show-capture=all

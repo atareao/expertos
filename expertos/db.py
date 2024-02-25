@@ -22,17 +22,21 @@
 # SOFTWARE.
 
 import sqlite3
+from expertos import log
 
 
 class DB:
+    @log.info
     def __init__(self, filename: str):
         self._filename = filename
 
+    @log.info
     def execute(self, script: str):
         with sqlite3.connect(self._filename) as connection:
             cursor = connection.cursor()
             cursor.execute(script)
 
+    @log.info
     def select(self, sql: str, values=None):
         with sqlite3.connect(self._filename) as connection:
             cursor = connection.cursor()
@@ -42,6 +46,7 @@ class DB:
                 res = cursor.execute(sql)
             return res.fetchall()
 
+    @log.info
     def insert(self, sql: str, values):
         with sqlite3.connect(self._filename) as connection:
             cursor = connection.cursor()
@@ -50,5 +55,11 @@ class DB:
             if sql.find(" RETURNING ") > -1:
                 return res.fetchall()
 
-
-
+    @log.info
+    def table_exists(self, table_name: str) -> bool:
+        sql = ("SELECT name FROM sqlite_master WHERE type='table' AND "
+               "name = ? ")
+        values = self.select(sql, (table_name,))
+        if values:
+            return values[0][0] == table_name
+        return False
