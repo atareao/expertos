@@ -7,7 +7,7 @@ import logging
 import os
 import sys
 import tomllib
-from typing import Dict, Union
+from typing import Dict
 from sanic import Sanic
 from sanic.request import Request
 from sanic.response import json
@@ -62,12 +62,40 @@ async def attach_db(app, loop):
 
 @app.get("/status")
 async def status_handler(request: Request):
+    """Get the status of the server
+
+    Parameters
+    ----------
+    request : Request
+        the request
+
+    """
+
     logger.info("status_handler")
     return json({"status": "Ok", "message": "up and running"})
 
 
 @app.get("/query")
 async def query_handler(request: Request):
+    """Ask for a new query
+
+    openapi:
+    ---
+    parameters:
+      - expert: expert
+        in: query
+        description: the name of the expert
+        required: false
+        schema:
+          type: string
+    responses:
+      '200':
+        description: the advice
+      '200':
+        description: the list of experts if no expert name is provided
+      '404':
+        description: not found
+    """
     expert_names = list(app.ctx.experts.keys())
     logger.debug(expert_names)
     expert_name = request.args.get("expert")
@@ -88,6 +116,48 @@ async def query_handler(request: Request):
 
 @app.get("/post")
 async def post_handler(request: Request):
+    """Post a new query in telegram
+
+    openapi:
+    ---
+    parameters:
+      - expert: expert
+        in: query
+        description: the name of the expert
+        required: false
+        schema:
+        type: string
+      - expert: chat_id
+        in: query
+        description: the chat_id
+        required: true
+        schema:
+          type: string
+      - expert: thread_id
+        in: query
+        description: the thread_id
+        required: false
+        schema:
+          type: integer
+          format: int32
+      - expert: expert
+        in: query
+        description: the name of the expert
+        required: false
+        schema:
+          type: string
+    responses:
+      '200':
+        description: the response of Telegram
+      '400':
+        description: if chat_id is not provided
+      '400':
+        description: if expert is not provided
+      '404':
+        description: if expert is not provided
+      '500':
+        description: another error
+    """
     try:
         experts_name = list(app.ctx.experts.keys())
         expert_name = request.args.get("expert")
