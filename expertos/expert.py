@@ -17,7 +17,7 @@ class Expert:
         self._question = data["question"]
         self._db = db
 
-    def get_messages(self) -> List[Dict[str, str]]:
+    def get_dialog(self) -> List[Dict[str, str]]:
         template_prompt = Template(self._prompt)
         variables = self.get_variables()
         prompt = template_prompt.render(variables)

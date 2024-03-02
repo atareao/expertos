@@ -1,24 +1,34 @@
 version: '3.7'
 
 services:
-  croni:
-    image: atareao/croni:v1.1
+  croni_for_expertos:
+    image: atareao/cronirs:v0.2.1
+    container_name: cronirs_for_expertos
+    init: true
     restart: unless-stopped
     depends_on:
       - expertos
     networks:
       - internal
+    environment:
+      - TZ=Europe/Madrid
+      - CRONTAB=/app/crontab.txt
+      - LOG_LEVEL=debug
     volumes:
-      - ./crontab:/crontab
+      - ./crontab.txt:/app/crontab.txt
 
   expertos:
-    init: true
     image: atareao/expertos:v0.1.0
+    container_name: expertos
+    restart: unless-stopped
+    init: true
+    environment:
+      - TZ=Europe/Madrid
     volumes:
       - ./config.toml:/app/config.toml
+      - ./expertos.db:/app/expertos.db
     networks:
       - internal
 
 networks:
   internal: {}
-

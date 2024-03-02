@@ -103,9 +103,9 @@ async def query_handler(request: Request):
     if expert_name:
         if expert_name in expert_names:
             expert = app.ctx.experts[expert_name]
-            messages = expert.get_messages()
-            advice = await app.ctx.chat_gpt.post(messages)
-            return json({"status": "Ok", "advice": advice})
+            dialog = expert.get_dialog()
+            message = await app.ctx.chat_gpt.post(dialog)
+            return json({"status": "Ok", "message": message})
         else:
             return json({"status": "Ko",
                          "message": f"{expert_name} not found"}, 404)
@@ -163,7 +163,8 @@ async def post_handler(request: Request):
                 if chat_id:
                     thread_id = thread_id if thread_id else 0
                     expert = app.ctx.experts[expert_name]
-                    message = await app.ctx.chat_gpt.post(expert)
+                    dialog = expert.get_dialog()
+                    message = await app.ctx.chat_gpt.post(dialog)
                     response = await app.ctx.telegram.post(chat_id, thread_id,
                                                            message)
                     logger.debug(response)

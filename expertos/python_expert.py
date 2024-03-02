@@ -9,10 +9,10 @@ from expertos.db import DB
 from expertos.expert import Expert
 
 
-class LinuxExpert(Expert):
+class PythonExpert(Expert):
     def __init__(self, db: DB, data: Dict[str, str]):
         super().__init__(db, data)
-        self._table_name = "linux_expert"
+        self._table_name = "python_expert"
         if not self._db.table_exists(self._table_name):
             log.debug(f"Table {self._table_name} not exists")
             self.configure_db()
@@ -20,21 +20,20 @@ class LinuxExpert(Expert):
     def configure_db(self):
         sql = (f"CREATE TABLE IF NOT EXISTS {self._table_name} ("
                "id INTEGER PRIMARY KEY,"
-               "command TEXT NOT NULL DEFAULT '',"
+               "module TEXT NOT NULL DEFAULT '',"
                "published BOOLEAN NOT NULL DEFAULT FALSE)")
         self._db.execute(sql)
-        sql = f"INSERT INTO {self._table_name} (command) VALUES (?)"
-        for command in self.commands():
-            self._db.insert(sql, (command,))
+        sql = f"INSERT INTO {self._table_name} (module) VALUES (?)"
+        for module in self.modules():
+            self._db.insert(sql, (module,))
 
     @staticmethod
-    def commands():
-        commands_file = os.path.join(os.path.dirname(__file__),
-                                     "data",
-                                     "linux_commands.txt")
-        with open(commands_file, "r") as fr:
-            commands = fr.readlines()
-        return iter(commands)
+    def modules():
+        modules_file = os.path.join(os.path.dirname(__file__), "data",
+                                    "python_modules.txt")
+        with open(modules_file, "r") as fr:
+            modules = fr.readlines()
+        return iter(modules)
 
     def get_variables(self):
         variables = super().get_variables()
@@ -42,7 +41,7 @@ class LinuxExpert(Expert):
         values = self._db.select(sql, (False,))
         selected = random.choice(values)
         log.debug(selected)
-        variables.update({"command": selected[1]})
+        variables.update({"module": selected[1]})
         sql = f"UPDATE {self._table_name} SET published = ? WHERE id = ?"
         values = self._db.update(sql, (True, selected[0]))
         log.debug(values)

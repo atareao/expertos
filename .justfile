@@ -29,6 +29,17 @@ build-test:
     docker build -t {{user}}/{{name}}:test \
                  .
 test:
+    #!/bin/bash
+    docker ps | grep {{name}}
+    if [[ $? -eq 0 ]]; then
+        docker stop {{name}}
+        docker wait {{name}}
+        while docker ps | grep {{name}};do
+            echo "sleeping"
+            sleep 1
+        done
+    fi
+    echo "starting"
     docker run --rm \
                --init \
                --name {{name}} \
