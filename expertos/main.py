@@ -82,8 +82,8 @@ async def query_handler(request: Request):
     openapi:
     ---
     parameters:
-      - expert: expert
-        in: query
+      - name: expert
+        in: expert
         description: the name of the expert
         required: false
         schema:
@@ -121,31 +121,25 @@ async def post_handler(request: Request):
     openapi:
     ---
     parameters:
-      - expert: expert
-        in: query
+      - name: expert
+        in: expert
         description: the name of the expert
         required: false
         schema:
         type: string
-      - expert: chat_id
-        in: query
-        description: the chat_id
+      - name: chat_id
+        in: chat_id
+        description: the chat_id of Telegram
         required: true
         schema:
           type: string
-      - expert: thread_id
-        in: query
-        description: the thread_id
+      - name: thread_id
+        in: thread_id
+        description: the thread_id of Telegram
         required: false
         schema:
           type: integer
           format: int32
-      - expert: expert
-        in: query
-        description: the name of the expert
-        required: false
-        schema:
-          type: string
     responses:
       '200':
         description: the response of Telegram
@@ -154,7 +148,7 @@ async def post_handler(request: Request):
       '400':
         description: if expert is not provided
       '404':
-        description: if expert is not provided
+        description: if expert is not found
       '500':
         description: another error
     """
