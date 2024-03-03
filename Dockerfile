@@ -42,6 +42,7 @@ ENV VIRTUAL_ENV=/app/.venv \
 
 RUN echo "**** install Python ****" && \
     apk add --update --no-cache \
+            tzdata~=2024 \
             python3~=3.11 && \
     rm -rf /var/lib/apt/lists/*
 
