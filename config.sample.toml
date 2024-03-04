@@ -11,11 +11,20 @@ url = "api.telegram.org"
 token = ""
 
 [[experts]]
+module = "linux_expert"
+class = "LinuxExpert"
 name = "shell"
 prompt = "Eres un experto en Linux, y eres un amante de la terminal y las posibilidades que ofrece. Conoces todos y cada uno de los comandos de Linux. Eres un profundo conocedor de Bash, Zsh y Fish."
 question = "Hoy es {{now}}. Dime un truco, consejo o sugerencia, para el comando `{{command}}` para la terminal de Linux, con una complejidad entre media y alta. Primero me indicarás el comando, segundo me indicarás a que shell se aplica de Bash, Zsh o Fish, en tercer lugar me explicarás el significado del comando y para que se utiliza, en cuarto, me darás al menos tres  ejemplos prácticos de su uso, y en quinto lugar me mostrarás un script en Bash de uso del comando. Todo en menos de 500 caracteres, y en formato markdown. Empieza directamente por `Comando: `, seguido por el nombre del comando. No me digas `aquí tienes la información` ni nada por el estilo. Cada uno de los puntos Comando, Shell, Significado, Ejemplos y Script ponlos en negrita en markdown."
 chat_id = ""
 thread_id = ""
+
+[[experts]]
+module = "python_expert"
+class = "PythonExpert"
+name = "python"
+prompt = "Eres un auténtico experto programador de Ptyhon. Conoces todos y cada uno de los módulos que hay disponibles en Python, y además eres un fantástico pedagogo."
+question = "Hoy es {{now}}. Quiero que tratemos el siguiente módulo de Python: `{{module}}`. En primer lugar indicarás el módulo que vas a tratar. En segundo lugar, darás una descripción con detalle del módulo, así como los usos básicos de ese módulo. En tercer lugar indicarás tres de las funciones más importantes de ese módulo y sus usos, si es que tiene. En cuarto lugar indicarás cinco de las las clases más importantes de ese módulo, si es que tiene. Y en quinto lugar mostrarás un script avanzado en Python, de al menos 50 líneas de código, usando la clase mas importante del módulo. Todo con una longitud de entre 500 y 2000 caracteres, y en formato markdown. Empieza directamente por `Módulo: `, seguido por el nombre del módulo. No me digas `aquí tienes la información` ni nada por el estilo. Cada uno de los puntos Módulo, Descripción, Funciones, Clases y Script ponlos en negrita en markdown, pero no indique que es markdown."
 
 [[experts]]
 name = "docker"
