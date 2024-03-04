@@ -25,7 +25,7 @@ class Telegram:
                 "chat_id": chat_id,
                 "message_thread_id": thread_id,
                 "parse_mode": "markdown",
-                "text": message
+                "text": message.replace("\"", "'")
                 }
         logger.debug(payload)
         print(payload)
