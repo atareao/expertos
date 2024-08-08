@@ -1,35 +1,31 @@
 ###############################################################################
 ## Builder
 ###############################################################################
-FROM alpine:3.19 as builder
+FROM alpine:3.20 as builder
 
-ENV POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_IN_PROJECT=1 \
-    POETRY_VIRTUALENVS_CREATE=1 \
-    POETRY_CACHE_DIR=/tmp/poetry_cache
-
+ENV RYE_INSTALL_OPTION="--yes"
 RUN echo "**** install Python ****" && \
     apk add --update --no-cache --virtual \
             .build-deps \
-            gcc~=13.2 \
             musl-dev~=1.2 \
-            python3-dev~=3.11 \
-            python3~=3.11 \
-            py3-pip~=23.3 \
-            poetry~=1.7 && \
+            python3-dev~=3.12 \
+            python3~=3.12 \
+            py3-pip~=24.0 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+COPY requirements.lock ./
+RUN python -m venv /app/.venv && \
+    source /app/.venv/bin/activate && \
+    pip install --upgrade pip && \
+    PYTHONDONTWRITEBYTECODE=1 pip install --no-cache-dir -r /app/requirements.lock
 
-COPY pyproject.toml poetry.lock ./
-
-RUN echo "**** install Python dependencies ****" && \
-    poetry install --without dev --no-root && rm -rf $POETRY_CACHE_DIR
+COPY src .
 
 ###############################################################################
 ## Final image
 ###############################################################################
-FROM alpine:3.19
+FROM alpine:3.20
 
 LABEL maintainer="Lorenzo Carbonell <a.k.a. atareao> lorenzo.carbonell.cerezo@gmail.com"
 
@@ -43,12 +39,11 @@ ENV VIRTUAL_ENV=/app/.venv \
 RUN echo "**** install Python ****" && \
     apk add --update --no-cache \
             tzdata~=2024 \
-            python3~=3.11 && \
+            python3~=3.12 && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 COPY run.sh /app/
-COPY ./expertos /app/expertos
 
 RUN adduser \
     --disabled-password \
