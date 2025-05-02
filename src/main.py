@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 import importlib
 import logging
 import os
@@ -12,9 +11,9 @@ from sanic import Sanic
 from sanic.request import Request
 from sanic.response import json
 
-from expertos.db import DB
-from expertos.openai import ChatGPT
-from expertos.telegram import Telegram
+from db import DB
+from openai import ChatGPT
+from telegram import Telegram
 
 FORMAT = "[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
 logging.basicConfig(stream=sys.stdout, format=FORMAT, level=logging.DEBUG)
@@ -28,7 +27,7 @@ def instanciate(module_name: str,
                 class_name: str,
                 db: DB,
                 data: Dict[str, str]) -> object:
-    module = importlib.import_module(f"expertos.{module_name}")
+    module = importlib.import_module(module_name)
     Klass = getattr(module, class_name)
     return Klass(db, data)
 

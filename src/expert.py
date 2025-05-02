@@ -5,7 +5,7 @@ import logging
 from typing import List, Dict
 from jinja2 import Template
 from datetime import datetime
-from expertos.db import DB
+from db import DB
 
 logger = logging.getLogger(__name__)
 
