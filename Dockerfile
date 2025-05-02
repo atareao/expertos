@@ -1,31 +1,37 @@
 ###############################################################################
 ## Builder
 ###############################################################################
-FROM alpine:3.20 as builder
+FROM alpine:3.21 AS builder
 
-ENV RYE_INSTALL_OPTION="--yes"
 RUN echo "**** install Python ****" && \
     apk add --update --no-cache --virtual \
             .build-deps \
+            gcc~=14.2 \
             musl-dev~=1.2 \
             python3-dev~=3.12 \
             python3~=3.12 \
-            py3-pip~=24.0 && \
+            uv=~0.5  &&\
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-COPY requirements.lock ./
-RUN python -m venv /app/.venv && \
-    source /app/.venv/bin/activate && \
-    pip install --upgrade pip && \
-    PYTHONDONTWRITEBYTECODE=1 pip install --no-cache-dir -r /app/requirements.lock
 
-COPY src .
+WORKDIR /app
+
+# Enable bytecode compilation
+ENV UV_COMPILE_BYTECODE=1
+
+# Copy from the cache instead of linking since it's a mounted volume
+ENV UV_LINK_MODE=copy
+
+# Install the project's dependencies using the lockfile and settings
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
 
 ###############################################################################
 ## Final image
 ###############################################################################
-FROM alpine:3.20
+FROM alpine:3.21
 
 LABEL maintainer="Lorenzo Carbonell <a.k.a. atareao> lorenzo.carbonell.cerezo@gmail.com"
 
@@ -38,7 +44,7 @@ ENV VIRTUAL_ENV=/app/.venv \
 
 RUN echo "**** install Python ****" && \
     apk add --update --no-cache \
-            tzdata~=2024 \
+            tzdata~=2025 \
             python3~=3.12 && \
     rm -rf /var/lib/apt/lists/*
 
