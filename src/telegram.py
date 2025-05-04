@@ -24,7 +24,7 @@ class Telegram:
         payload = {
                 "chat_id": chat_id,
                 "message_thread_id": thread_id,
-                "parse_mode": "markdown",
+                "parse_mode": "HTML",
                 "text": message.replace("\"", "'")
                 }
         logger.debug(payload)
