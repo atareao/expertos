@@ -54,7 +54,7 @@ stop:
     docker stop {{name}}
 
 run:
-    poetry run python expertos/main.py
+    uv run python src/main.py
 
 run-test:
     poetry run pytest tests --show-capture=all
