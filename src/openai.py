@@ -3,15 +3,17 @@
 
 import logging
 from typing import List
+
 from httpx import AsyncClient
 
 logger = logging.getLogger(__name__)
 
 
 class ChatGPT:
-    """A class to manage ChatGPT"""
+    """A class to manage ChatGPT."""
 
     def __init__(self, url: str, endpoint, token: str, model: str):
+        """Initialize the ChatGPT class."""
         logger.info("__init__")
         self._url = f"https://{url}/{endpoint}"
         self._headers = {
@@ -22,6 +24,7 @@ class ChatGPT:
         self._model = model
 
     async def post(self, messages: List[str]) -> str:
+        """Send a message to ChatGPT and return the response."""
         logger.info("post")
         payload = {
             "model": self._model,
@@ -42,9 +45,11 @@ class ChatGPT:
 
 
 async def main():
+    """Main function to run the program."""
     import tomllib
-    import aiofiles
     from pprint import pprint
+
+    import aiofiles
     from expertos.expert import Expert
     experts = {}
 

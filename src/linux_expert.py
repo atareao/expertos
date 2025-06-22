@@ -4,13 +4,17 @@
 import os
 import random
 from typing import Dict
-from log import Log
+
 from db import DB
 from expert import Expert
+from log import Log
 
 
 class LinuxExpert(Expert):
+    """Linux expert class."""
+
     def __init__(self, db: DB, data: Dict[str, str]):
+        """Initialize the Linux expert class."""
         super().__init__(db, data)
         self._table_name = "linux_expert"
         if not self._db.table_exists(self._table_name):
@@ -18,6 +22,7 @@ class LinuxExpert(Expert):
             self.configure_db()
 
     def configure_db(self):
+        """Configure the database."""
         sql = (f"CREATE TABLE IF NOT EXISTS {self._table_name} ("
                "id INTEGER PRIMARY KEY,"
                "command TEXT NOT NULL DEFAULT '',"
@@ -29,6 +34,7 @@ class LinuxExpert(Expert):
 
     @staticmethod
     def commands():
+        """Return a list of Linux commands."""
         commands_file = os.path.join(os.path.dirname(__file__),
                                      "data",
                                      "linux_commands.txt")
@@ -37,6 +43,7 @@ class LinuxExpert(Expert):
         return iter(commands)
 
     def get_variables(self):
+        """Return a dictionary of variables."""
         variables = super().get_variables()
         sql = f"SELECT * FROM {self._table_name} WHERE published = ?"
         values = self._db.select(sql, (False,))

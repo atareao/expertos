@@ -7,6 +7,7 @@ import os
 import sys
 import tomllib
 from typing import Dict
+
 from sanic import Sanic
 from sanic.request import Request
 from sanic.response import json
@@ -27,6 +28,7 @@ def instanciate(module_name: str,
                 class_name: str,
                 db: DB,
                 data: Dict[str, str]) -> object:
+    """Instanciate a class from a module."""
     module = importlib.import_module(module_name)
     Klass = getattr(module, class_name)
     return Klass(db, data)
@@ -69,7 +71,6 @@ async def status_handler(request: Request):
         the request
 
     """
-
     logger.info("status_handler")
     return json({"status": "Ok", "message": "up and running"})
 
@@ -166,6 +167,75 @@ async def post_handler(request: Request):
                     message = await app.ctx.chat_gpt.post(dialog)
                     response = await app.ctx.telegram.post(chat_id, thread_id,
                                                            message)
+                    logger.debug(response)
+                    return json(response)
+                else:
+                    return json({"status": "Ko",
+                                 "message": "chat_id is mandatory"}, 400)
+            else:
+                return json({"status": "Ko",
+                             "message": f"{expert_name} not found"}, 404)
+        else:
+            logger.debug(experts_name)
+            return json({"status": "Ko",
+                         "message": "expert_name is mandatory"}, 400)
+    except Exception as exception:
+        logger.error(f"Error: {exception}")
+        return json({"status": "Ko", "message": f"Error: {exception}"}, 500)
+
+@app.get("/postm")
+async def post_handler(request: Request):
+    """Post a new query in telegram
+
+    openapi:
+    ---
+    parameters:
+      - name: expert
+        in: expert
+        description: the name of the expert
+        required: false
+        schema:
+        type: string
+      - name: chat_id
+        in: chat_id
+        description: the chat_id of Telegram
+        required: true
+        schema:
+          type: string
+      - name: thread_id
+        in: thread_id
+        description: the thread_id of Telegram
+        required: false
+        schema:
+          type: integer
+          format: int32
+    responses:
+      '200':
+        description: the response of Telegram
+      '400':
+        description: if chat_id is not provided
+      '400':
+        description: if expert is not provided
+      '404':
+        description: if expert is not found
+      '500':
+        description: another error
+    """
+    try:
+        experts_name = list(app.ctx.experts.keys())
+        expert_name = request.args.get("expert")
+        chat_id = request.args.get("chat_id")
+        thread_id = request.args.get("thread_id")
+        logger.debug(f"chat_id: {chat_id}, thread_id: {thread_id}")
+        if expert_name:
+            if expert_name in experts_name:
+                if chat_id:
+                    thread_id = thread_id if thread_id else 0
+                    expert = app.ctx.experts[expert_name]
+                    dialog = expert.get_dialog()
+                    message = await app.ctx.chat_gpt.post(dialog)
+                    response = await app.ctx.telegram.postMarkdown(chat_id,
+                        thread_id, message)
                     logger.debug(response)
                     return json(response)
                 else:

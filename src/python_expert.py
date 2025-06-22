@@ -11,7 +11,9 @@ from log import Log
 
 
 class PythonExpert(Expert):
+    """Python expert class."""
     def __init__(self, db: DB, data: Dict[str, str]):
+        """Initialize the Python expert class."""
         super().__init__(db, data)
         self._table_name = "python_expert"
         if not self._db.table_exists(self._table_name):
@@ -19,6 +21,7 @@ class PythonExpert(Expert):
             self.configure_db()
 
     def configure_db(self):
+        """Configure the database for the Python expert class."""
         sql = (f"CREATE TABLE IF NOT EXISTS {self._table_name} ("
                "id INTEGER PRIMARY KEY,"
                "module TEXT NOT NULL DEFAULT '',"
@@ -30,6 +33,7 @@ class PythonExpert(Expert):
 
     @staticmethod
     def modules():
+        """Return an iterator of Python modules."""
         modules_file = os.path.join(os.path.dirname(__file__), "data",
                                     "python_modules.txt")
         with open(modules_file, "r") as fr:
@@ -37,6 +41,7 @@ class PythonExpert(Expert):
         return iter(modules)
 
     def get_variables(self):
+        """Return a dictionary of variables for the Python expert class."""
         variables = super().get_variables()
         sql = f"SELECT * FROM {self._table_name} WHERE published = ?"
         values = self._db.select(sql, (False,))
