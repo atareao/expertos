@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import re
 from typing import Union
 
 from httpx import AsyncClient
@@ -57,7 +58,7 @@ class Telegram:
             "chat_id": chat_id,
             "message_thread_id": thread_id,
             "parse_mode": "MarkdownV2",
-            "text": message.replace('"', "'"),
+            "text": self.escape_markdown_v2(message)
         }
         logger.debug(payload)
         print(payload)
@@ -73,3 +74,12 @@ class Telegram:
                 print(response)
                 print(response.json())
                 raise Exception(msg)
+
+    def escape_markdown_v2(self, text: str) -> str:
+        """Escapes all special characters in a MarkdownV2 text."""
+        text = text.replace('"', "'")
+        escape_chars = r"~#+-={}[]().\\"
+        def escape_char(match):
+            return '\\' + match.group(0)
+        text = re.sub(f'([{re.escape(escape_chars)}])', escape_char, text)
+        return text
