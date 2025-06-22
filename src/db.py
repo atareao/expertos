@@ -22,22 +22,27 @@
 # SOFTWARE.
 
 import sqlite3
+
 from log import Log
 
 
 class DB:
+    """Database class for managing SQLite databases."""
     @Log.info
     def __init__(self, filename: str):
+        """Initialize the database connection."""
         self._filename = filename
 
     @Log.info
     def execute(self, script: str):
+        """Execute a SQL script."""
         with sqlite3.connect(self._filename) as connection:
             cursor = connection.cursor()
             cursor.execute(script)
 
     @Log.info
     def select(self, sql: str, values=None):
+        """Execute a SQL SELECT statement and return the results."""
         with sqlite3.connect(self._filename) as connection:
             cursor = connection.cursor()
             if values:
@@ -48,6 +53,7 @@ class DB:
 
     @Log.info
     def insert(self, sql: str, values):
+        """Insert data into a table."""
         with sqlite3.connect(self._filename) as connection:
             cursor = connection.cursor()
             res = cursor.execute(sql, values)
@@ -57,6 +63,7 @@ class DB:
 
     @Log.info
     def update(self, sql: str, values):
+        """Update data in a table."""
         with sqlite3.connect(self._filename) as connection:
             cursor = connection.cursor()
             res = cursor.execute(sql, values)
@@ -66,6 +73,7 @@ class DB:
 
     @Log.info
     def table_exists(self, table_name: str) -> bool:
+        """Check if a table exists."""
         sql = ("SELECT name FROM sqlite_master WHERE type='table' AND "
                "name = ? ")
         values = self.select(sql, (table_name,))

@@ -23,13 +23,15 @@
 
 import inspect
 import logging
-import traceback
 import time
+import traceback
 
 
 class Log:
+    """Log class for logging messages."""
     @staticmethod
     def _logea(message, logger, level):
+        """Log a message with the given level."""
         if level == logging.DEBUG:
             logger.debug(message)
         elif level == logging.INFO:
@@ -42,6 +44,7 @@ class Log:
 
     @staticmethod
     def logea(item, level):
+        """Log a function call with the given level."""
         stack = inspect.stack()
         parentframe = stack[2][0]
         module = inspect.getmodule(parentframe)
@@ -72,16 +75,20 @@ class Log:
 
     @staticmethod
     def debug(item):
+        """Log a message with the given level."""
         return Log.logea(item, logging.DEBUG)
 
     @staticmethod
     def info(item):
+        """Log a message with the given level."""
         return Log.logea(item, logging.INFO)
 
     @staticmethod
     def warn(item):
+        """Log a message with the given level."""
         return Log.logea(item, logging.WARN)
 
     @staticmethod
     def error(item):
+        """Log a message with the given level."""
         return Log.logea(item, logging.ERROR)
