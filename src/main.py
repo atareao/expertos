@@ -184,7 +184,7 @@ async def post_handler(request: Request):
         return json({"status": "Ko", "message": f"Error: {exception}"}, 500)
 
 @app.get("/postm")
-async def post_handler(request: Request):
+async def postm_handler(request: Request):
     """Post a new query in telegram
 
     openapi:
