@@ -165,8 +165,8 @@ async def post_handler(request: Request):
                     expert = app.ctx.experts[expert_name]
                     dialog = expert.get_dialog()
                     message = await app.ctx.chat_gpt.post(dialog)
-                    response = await app.ctx.telegram.postMarkdown(chat_id,
-                        thread_id, message)
+                    response = await app.ctx.telegram.post(chat_id, thread_id,
+                        message)
                     logger.debug(response)
                     return json(response)
                 else:
