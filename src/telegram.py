@@ -24,33 +24,6 @@ class Telegram:
     async def post(
         self, chat_id: Union[str, int], thread_id: int = 0, message: str = ""
     ):
-        """Send a message to a Telegram chat."""
-        logger.info("post")
-        url = f"{self._url}/sendMessage"
-        payload = {
-            "chat_id": chat_id,
-            "message_thread_id": thread_id,
-            "parse_mode": "HTML",
-            "text": message.replace('"', "'"),
-        }
-        logger.debug(payload)
-        print(payload)
-        async with AsyncClient() as client:
-            response = await client.post(
-                url, headers=self._headers, json=payload
-            )
-            logger.debug(f"Response: {response}")
-            if response.status_code == 200:
-                return response.json()
-            else:
-                msg = f"HTTP Error: {response.status_code}"
-                print(response)
-                print(response.json())
-                raise Exception(msg)
-
-    async def postMarkdown(
-        self, chat_id: Union[str, int], thread_id: int = 0, message: str = ""
-    ):
         """Send a message to a Telegram chat using Markdown formatting."""
         logger.info("post")
         url = f"{self._url}/sendMessage"
